@@ -4,7 +4,6 @@ import hashlib
 import re
 from typing import Optional, Dict, List
 
-# Configuración de la base de datos
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
@@ -230,7 +229,6 @@ class GradeManagerApp:
         """Muestra la pantalla de login"""
         self.page.controls.clear()
         
-        # Título
         title = ft.Text(
             "Sistema de Gestión de Calificaciones",
             size=32,
@@ -238,7 +236,6 @@ class GradeManagerApp:
             color="blue"
         )
         
-        # Campos de login
         username_field = ft.TextField(
             label="Usuario",
             width=300
@@ -281,7 +278,6 @@ class GradeManagerApp:
             on_click=on_register
         )
         
-        # Layout
         login_card = ft.Container(
             content=ft.Column(
                 [
@@ -320,14 +316,11 @@ class GradeManagerApp:
         """Muestra la pantalla de registro con scroll"""
         self.page.controls.clear()
         
-        # Variable para mensajes de error
         error_text = ft.Text("", color="red")
         
-        # Obtener especialidades
         especialidades = DatabaseManager.get_especialidades()
         especialidad_options = [ft.dropdown.Option(str(e['id']), e['nombre']) for e in especialidades]
         
-        # Crear campos del formulario
         nombre_field = ft.TextField(label="Nombre Completo", width=400)
         curp_field = ft.TextField(label="CURP", width=400)
         matricula_field = ft.TextField(label="Matrícula", width=400)
@@ -343,7 +336,6 @@ class GradeManagerApp:
         )
         
         def on_submit(e):
-            # Validar campos obligatorios
             required_fields = [
                 nombre_field, curp_field, matricula_field, 
                 correo_field, username_field, password_field, 
@@ -356,19 +348,16 @@ class GradeManagerApp:
                     self.page.update()
                     return
             
-            # Validar CURP
             if not DatabaseManager.validate_curp(curp_field.value.upper()):
                 error_text.value = "CURP no válida (Formato: 4 letras, 6 números, 6 letras, 2 números)"
                 self.page.update()
                 return
             
-            # Validar email
             if not DatabaseManager.validate_email(correo_field.value):
                 error_text.value = "Correo electrónico no válido"
                 self.page.update()
                 return
             
-            # Validar contraseñas
             if password_field.value != confirm_password_field.value:
                 error_text.value = "Las contraseñas no coinciden"
                 self.page.update()
@@ -401,7 +390,6 @@ class GradeManagerApp:
         def on_back(e):
             self.show_login()
         
-        # Layout del formulario con scroll
         form_container = ft.Container(
             content=ft.Column(
                 [
@@ -442,7 +430,6 @@ class GradeManagerApp:
             )
         )
         
-        # Agregar el contenedor a la página
         self.page.add(
             ft.Row(
                 [form_container],
@@ -456,7 +443,6 @@ class GradeManagerApp:
         """Muestra el panel principal"""
         self.page.controls.clear()
         
-        # Header con información del usuario
         header = ft.Container(
             content=ft.Row(
                 [
@@ -472,7 +458,6 @@ class GradeManagerApp:
                         spacing=5
                     ),
                     ft.IconButton(
-                        icon=ft.icons.LOGOUT,
                         tooltip="Cerrar Sesión",
                         on_click=lambda e: self.show_login()
                     )
@@ -484,7 +469,6 @@ class GradeManagerApp:
             border_radius=10
         )
         
-        # Selector de semestre
         semestre_dropdown = ft.Dropdown(
             label="Semestre",
             width=200,
@@ -498,17 +482,13 @@ class GradeManagerApp:
         
         semestre_dropdown.on_change = on_semester_change
         
-        # Contenedor para calificaciones con scroll
         grades_container = ft.Column(spacing=20, scroll=ft.ScrollMode.AUTO, height=500)
         
-        # Promedio general
         promedio_general_text = ft.Text(size=20, weight="bold")
         
         def update_grades_view(grades_container_ref, promedio_text_ref):
-            # Limpiar contenedor
             grades_container_ref.controls.clear()
             
-            # Obtener materias del semestre
             materias = DatabaseManager.get_materias_por_semestre(
                 self.current_user['especialidad_id'], 
                 self.selected_semester
@@ -521,20 +501,16 @@ class GradeManagerApp:
                 self.page.update()
                 return
             
-            # Obtener calificaciones existentes
             calificaciones = DatabaseManager.get_calificaciones(
                 self.current_user['id'], 
                 self.selected_semester
             )
             
-            # Crear diccionario de calificaciones por materia
             calificaciones_dict = {c['materia_id']: c for c in calificaciones}
             
-            # Crear tarjetas para cada materia
             for materia in materias:
                 calif = calificaciones_dict.get(materia['id'])
                 
-                # Campos para calificaciones
                 u1_field = ft.TextField(
                     label="Unidad 1",
                     width=120,
@@ -554,17 +530,15 @@ class GradeManagerApp:
                 )
                 
                 promedio_text = ft.Text("", size=16, weight="bold")
-                status_icon = ft.Icon(name=ft.icons.HELP, size=30)
+                status_icon = ft.Icon(name=ft.Icons.HOME, size=30)
                 
                 def make_save_handler(materia_id, u1, u2, u3, prom_text, status_icon_ref):
                     def save(e):
                         try:
-                            # Validar campos
                             if not u1.value or not u2.value or not u3.value:
                                 self.show_snackbar("Todos los campos son obligatorios", True)
                                 return
                             
-                            # Convertir a float y validar rango
                             val1 = float(u1.value)
                             val2 = float(u2.value)
                             val3 = float(u3.value)
@@ -573,7 +547,6 @@ class GradeManagerApp:
                                 self.show_snackbar("Las calificaciones deben estar entre 0 y 10", True)
                                 return
                             
-                            # Guardar calificación
                             success, message = DatabaseManager.save_calificacion(
                                 self.current_user['id'],
                                 materia_id,
@@ -582,11 +555,9 @@ class GradeManagerApp:
                             )
                             
                             if success:
-                                # Actualizar promedio mostrado
                                 promedio = (val1 + val2 + val3) / 3
                                 prom_text.value = f"Promedio: {promedio:.2f}"
                                 
-                                # Actualizar ícono de estado
                                 if promedio >= 6:
                                     status_icon_ref.name = ft.icons.CHECK_CIRCLE
                                     status_icon_ref.color = "green"
@@ -596,7 +567,6 @@ class GradeManagerApp:
                                     status_icon_ref.color = "red"
                                     status_icon_ref.tooltip = "Reprobado"
                                 
-                                # Actualizar promedio general
                                 general_prom = DatabaseManager.get_promedio_general(
                                     self.current_user['id']
                                 )
@@ -617,7 +587,6 @@ class GradeManagerApp:
                     
                     return save
                 
-                # Si ya existen calificaciones, mostrar el promedio
                 if calif:
                     promedio_val = (calif['unidad1'] + calif['unidad2'] + calif['unidad3']) / 3
                     promedio_text.value = f"Promedio: {promedio_val:.2f}"
@@ -658,7 +627,6 @@ class GradeManagerApp:
                 
                 grades_container_ref.controls.append(materia_card)
             
-            # Calcular y mostrar promedio general del semestre
             general_prom = DatabaseManager.get_promedio_general(
                 self.current_user['id'],
                 self.selected_semester
@@ -671,10 +639,8 @@ class GradeManagerApp:
             
             self.page.update()
         
-        # Inicializar vista de calificaciones
         update_grades_view(grades_container, promedio_general_text)
         
-        # Agregar todo a la página
         self.page.add(
             header,
             ft.Divider(height=20),
