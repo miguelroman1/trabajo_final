@@ -181,7 +181,7 @@ class DatabaseManager:
                 cursor.execute(query, (usuario_id,))
             
             result = cursor.fetchone()
-            return round(result[0], 2) if result[0] else 0.0
+            return round(result[0], 2) if result and result[0] else 0.0
         finally:
             cursor.close()
             conn.close()
@@ -219,7 +219,7 @@ class GradeManagerApp:
         """Muestra un mensaje temporal en la parte inferior"""
         snackbar = ft.SnackBar(
             content=ft.Text(message),
-            bgcolor="red" if is_error else "green",
+            bgcolor=ft.Colors.RED if is_error else ft.Colors.GREEN,
             open=True
         )
         self.page.overlay.append(snackbar)
@@ -233,7 +233,7 @@ class GradeManagerApp:
             "Sistema de Gestión de Calificaciones",
             size=32,
             weight="bold",
-            color="blue"
+            color=ft.Colors.BLUE
         )
         
         username_field = ft.TextField(
@@ -248,7 +248,7 @@ class GradeManagerApp:
             can_reveal_password=True
         )
         
-        error_text = ft.Text("", color="red")
+        error_text = ft.Text("", color=ft.Colors.RED)
         
         def on_login(e):
             if not username_field.value or not password_field.value:
@@ -294,12 +294,12 @@ class GradeManagerApp:
             ),
             padding=30,
             width=400,
-            bgcolor="white",
+            bgcolor=ft.Colors.WHITE,
             border_radius=10,
             shadow=ft.BoxShadow(
                 spread_radius=1,
                 blur_radius=10,
-                color="gray"
+                color=ft.Colors.GREY
             )
         )
         
@@ -316,7 +316,7 @@ class GradeManagerApp:
         """Muestra la pantalla de registro con scroll"""
         self.page.controls.clear()
         
-        error_text = ft.Text("", color="red")
+        error_text = ft.Text("", color=ft.Colors.RED)
         
         especialidades = DatabaseManager.get_especialidades()
         especialidad_options = [ft.dropdown.Option(str(e['id']), e['nombre']) for e in especialidades]
@@ -393,7 +393,7 @@ class GradeManagerApp:
         form_container = ft.Container(
             content=ft.Column(
                 [
-                    ft.Text("Registro de Alumno", size=28, weight="bold", color="blue"),
+                    ft.Text("Registro de Alumno", size=28, weight="bold", color=ft.Colors.BLUE),
                     ft.Divider(height=20),
                     nombre_field,
                     curp_field,
@@ -421,12 +421,12 @@ class GradeManagerApp:
             width=500,
             height=600,
             padding=30,
-            bgcolor="white",
+            bgcolor=ft.Colors.WHITE,
             border_radius=10,
             shadow=ft.BoxShadow(
                 spread_radius=1,
                 blur_radius=10,
-                color="gray"
+                color=ft.Colors.GREY
             )
         )
         
@@ -453,19 +453,19 @@ class GradeManagerApp:
                             ft.Text(f"Especialidad: {self.current_user['especialidad_nombre']}",
                                    size=16),
                             ft.Text(f"Matrícula: {self.current_user['matricula']}",
-                                   size=14, color="gray")
+                                   size=14, color=ft.Colors.GREY)
                         ],
                         spacing=5
                     ),
-                    ft.IconButton(
-                        tooltip="Cerrar Sesión",
+                    ft.TextButton(
+                        "Cerrar Sesión",
                         on_click=lambda e: self.show_login()
                     )
                 ],
                 alignment="spaceBetween"
             ),
             padding=10,
-            bgcolor="lightblue",
+            bgcolor=ft.Colors.LIGHT_BLUE_100,
             border_radius=10
         )
         
@@ -476,18 +476,17 @@ class GradeManagerApp:
             options=[ft.dropdown.Option(str(i), f"{i}° Semestre") for i in range(1, 7)]
         )
         
+        grades_container = ft.Column(spacing=20, scroll=ft.ScrollMode.AUTO, height=500)
+        promedio_general_text = ft.Text(size=20, weight="bold")
+        
         def on_semester_change(e):
             self.selected_semester = int(semestre_dropdown.value)
-            self.update_grades_view(grades_container, promedio_general_text)
+            update_grades_view()
         
         semestre_dropdown.on_change = on_semester_change
         
-        grades_container = ft.Column(spacing=20, scroll=ft.ScrollMode.AUTO, height=500)
-        
-        promedio_general_text = ft.Text(size=20, weight="bold")
-        
-        def update_grades_view(grades_container_ref, promedio_text_ref):
-            grades_container_ref.controls.clear()
+        def update_grades_view():
+            grades_container.controls.clear()
             
             materias = DatabaseManager.get_materias_por_semestre(
                 self.current_user['especialidad_id'], 
@@ -495,8 +494,8 @@ class GradeManagerApp:
             )
             
             if not materias:
-                grades_container_ref.controls.append(
-                    ft.Text("No hay materias registradas para este semestre", size=16, color="gray")
+                grades_container.controls.append(
+                    ft.Text("No hay materias registradas para este semestre", size=16, color=ft.Colors.GREY)
                 )
                 self.page.update()
                 return
@@ -530,9 +529,9 @@ class GradeManagerApp:
                 )
                 
                 promedio_text = ft.Text("", size=16, weight="bold")
-                status_icon = ft.Icon(name=ft.Icons.HOME, size=30)
+                estado_text = ft.Text("", size=14, weight="bold")
                 
-                def make_save_handler(materia_id, u1, u2, u3, prom_text, status_icon_ref):
+                def make_save_handler(materia_id, u1, u2, u3, prom_text, estado_text_ref):
                     def save(e):
                         try:
                             if not u1.value or not u2.value or not u3.value:
@@ -559,13 +558,11 @@ class GradeManagerApp:
                                 prom_text.value = f"Promedio: {promedio:.2f}"
                                 
                                 if promedio >= 6:
-                                    status_icon_ref.name = ft.icons.CHECK_CIRCLE
-                                    status_icon_ref.color = "green"
-                                    status_icon_ref.tooltip = "Aprobado"
+                                    estado_text_ref.value = "✅ Aprobado"
+                                    estado_text_ref.color = ft.Colors.GREEN
                                 else:
-                                    status_icon_ref.name = ft.icons.CANCEL
-                                    status_icon_ref.color = "red"
-                                    status_icon_ref.tooltip = "Reprobado"
+                                    estado_text_ref.value = "❌ Reprobado"
+                                    estado_text_ref.color = ft.Colors.RED
                                 
                                 general_prom = DatabaseManager.get_promedio_general(
                                     self.current_user['id']
@@ -574,7 +571,7 @@ class GradeManagerApp:
                                     self.current_user['id'], 
                                     self.selected_semester
                                 )
-                                promedio_text_ref.value = f"Promedio del {self.selected_semester}° Semestre: {general_total_prom:.2f}  |  Promedio General Acumulado: {general_prom:.2f}"
+                                promedio_general_text.value = f"Promedio del {self.selected_semester}° Semestre: {general_total_prom:.2f}  |  Promedio General Acumulado: {general_prom:.2f}"
                                 
                                 self.show_snackbar(message, False)
                             else:
@@ -592,18 +589,16 @@ class GradeManagerApp:
                     promedio_text.value = f"Promedio: {promedio_val:.2f}"
                     
                     if promedio_val >= 6:
-                        status_icon.name = ft.icons.CHECK_CIRCLE
-                        status_icon.color = "green"
-                        status_icon.tooltip = "Aprobado"
+                        estado_text.value = "✅ Aprobado"
+                        estado_text.color = ft.Colors.GREEN
                     else:
-                        status_icon.name = ft.icons.CANCEL
-                        status_icon.color = "red"
-                        status_icon.tooltip = "Reprobado"
+                        estado_text.value = "❌ Reprobado"
+                        estado_text.color = ft.Colors.RED
                 
                 save_btn = ft.ElevatedButton(
                     "Guardar",
                     on_click=make_save_handler(materia['id'], u1_field, u2_field, u3_field, 
-                                              promedio_text, status_icon)
+                                              promedio_text, estado_text)
                 )
                 
                 materia_card = ft.Card(
@@ -613,7 +608,7 @@ class GradeManagerApp:
                                 ft.Text(materia['nombre'], size=18, weight="bold"),
                                 ft.Divider(),
                                 ft.Row(
-                                    [u1_field, u2_field, u3_field, save_btn, promedio_text, status_icon],
+                                    [u1_field, u2_field, u3_field, save_btn, promedio_text, estado_text],
                                     alignment="start",
                                     spacing=20,
                                     wrap=True
@@ -625,7 +620,7 @@ class GradeManagerApp:
                     )
                 )
                 
-                grades_container_ref.controls.append(materia_card)
+                grades_container.controls.append(materia_card)
             
             general_prom = DatabaseManager.get_promedio_general(
                 self.current_user['id'],
@@ -635,11 +630,11 @@ class GradeManagerApp:
                 self.current_user['id']
             )
             
-            promedio_text_ref.value = f"Promedio del {self.selected_semester}° Semestre: {general_prom:.2f}  |  Promedio General Acumulado: {general_total_prom:.2f}"
+            promedio_general_text.value = f"Promedio del {self.selected_semester}° Semestre: {general_prom:.2f}  |  Promedio General Acumulado: {general_total_prom:.2f}"
             
             self.page.update()
         
-        update_grades_view(grades_container, promedio_general_text)
+        update_grades_view()
         
         self.page.add(
             header,
