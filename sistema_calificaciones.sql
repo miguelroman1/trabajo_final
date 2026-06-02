@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-06-2026 a las 18:39:41
+-- Tiempo de generación: 02-06-2026 a las 19:06:03
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.0.28
 
@@ -38,6 +38,13 @@ CREATE TABLE `calificaciones` (
   `promedio` decimal(4,2) DEFAULT NULL,
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `calificaciones`
+--
+
+INSERT INTO `calificaciones` (`id`, `usuario_id`, `materia_id`, `semestre`, `unidad1`, `unidad2`, `unidad3`, `promedio`, `fecha_registro`) VALUES
+(1, 1, 1, 1, 6.00, 8.00, 8.00, 7.33, '2026-06-02 17:04:31');
 
 -- --------------------------------------------------------
 
@@ -119,6 +126,13 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `nombre_completo`, `curp`, `correo`, `celular`, `foto_perfil`, `username`, `password`, `especialidad_id`, `fecha_registro`) VALUES
+(1, 'Miguel Angel Roman Padilla', 'LKHJ654565LALALA65', '23308060610314@cetis61.edu.mx', '6824788982', '', 'angel', '9b7af877e7ad4c237a87d38a767e4975ec90b978886e117f1952638a970db4f9', 1, '2026-06-02 17:03:41');
+
+--
 -- Índices para tablas volcadas
 --
 
@@ -164,7 +178,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `calificaciones`
 --
 ALTER TABLE `calificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidades`
@@ -182,7 +196,7 @@ ALTER TABLE `materias`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
