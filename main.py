@@ -42,21 +42,20 @@ class DatabaseManager:
         cursor = conn.cursor()
         
         try:
-            cursor.execute("SELECT id FROM usuarios WHERE username = %s OR correo = %s OR matricula = %s",
-                          (user_data['username'], user_data['correo'], user_data['matricula']))
+            cursor.execute("SELECT id FROM usuarios WHERE username = %s OR correo = %s ",
+                          (user_data['username'], user_data['correo']))
             if cursor.fetchone():
-                return False, "El usuario, correo o matrícula ya existe"
+                return False, "El usuario o correo ya existe"
             
             query = """
                 INSERT INTO usuarios 
-                (nombre_completo, curp, matricula, correo, celular, foto_perfil, username, password, especialidad_id)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                (nombre_completo, curp, correo, celular, foto_perfil, username, password, especialidad_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
             hashed_password = DatabaseManager.hash_password(user_data['password'])
             cursor.execute(query, (
                 user_data['nombre_completo'],
                 user_data['curp'],
-                user_data['matricula'],
                 user_data['correo'],
                 user_data['celular'],
                 user_data.get('foto_perfil', ''),
@@ -323,7 +322,6 @@ class GradeManagerApp:
         
         nombre_field = ft.TextField(label="Nombre Completo", width=400)
         curp_field = ft.TextField(label="CURP", width=400)
-        matricula_field = ft.TextField(label="Matrícula", width=400)
         correo_field = ft.TextField(label="Correo Institucional", width=400)
         celular_field = ft.TextField(label="Celular", width=400)
         username_field = ft.TextField(label="Usuario", width=400)
@@ -337,7 +335,7 @@ class GradeManagerApp:
         
         def on_submit(e):
             required_fields = [
-                nombre_field, curp_field, matricula_field, 
+                nombre_field, curp_field, 
                 correo_field, username_field, password_field, 
                 confirm_password_field, especialidad_dropdown
             ]
@@ -371,7 +369,6 @@ class GradeManagerApp:
             user_data = {
                 'nombre_completo': nombre_field.value,
                 'curp': curp_field.value.upper(),
-                'matricula': matricula_field.value,
                 'correo': correo_field.value,
                 'celular': celular_field.value,
                 'username': username_field.value,
@@ -397,7 +394,6 @@ class GradeManagerApp:
                     ft.Divider(height=20),
                     nombre_field,
                     curp_field,
-                    matricula_field,
                     correo_field,
                     celular_field,
                     username_field,
@@ -452,8 +448,6 @@ class GradeManagerApp:
                                    size=24, weight="bold"),
                             ft.Text(f"Especialidad: {self.current_user['especialidad_nombre']}",
                                    size=16),
-                            ft.Text(f"Matrícula: {self.current_user['matricula']}",
-                                   size=14, color=ft.Colors.GREY)
                         ],
                         spacing=5
                     ),

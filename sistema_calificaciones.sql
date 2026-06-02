@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-05-2026 a las 04:33:43
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 02-06-2026 a las 18:39:41
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -109,7 +109,6 @@ CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `nombre_completo` varchar(200) NOT NULL,
   `curp` varchar(18) NOT NULL,
-  `matricula` varchar(20) NOT NULL,
   `correo` varchar(100) NOT NULL,
   `celular` varchar(15) DEFAULT NULL,
   `foto_perfil` varchar(500) DEFAULT NULL,
@@ -153,7 +152,6 @@ ALTER TABLE `materias`
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `curp` (`curp`),
-  ADD UNIQUE KEY `matricula` (`matricula`),
   ADD UNIQUE KEY `correo` (`correo`),
   ADD UNIQUE KEY `username` (`username`),
   ADD KEY `especialidad_id` (`especialidad_id`);
