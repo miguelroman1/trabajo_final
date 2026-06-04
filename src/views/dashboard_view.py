@@ -25,7 +25,7 @@ class DashboardView:
                 alignment="spaceBetween"
             ),
             padding=10,
-            bgcolor=ft.colors.BLUE_50,
+            bgcolor=ft.Colors.BLUE_50,
             border_radius=10
         )
         
@@ -93,7 +93,7 @@ class DashboardView:
                 promedio_val = (calif['unidad1'] + calif['unidad2'] + calif['unidad3']) / 3
                 promedio_text.value = f"Promedio: {promedio_val:.2f}"
                 estado_text.value = "✅ Aprobado" if promedio_val >= 6 else "❌ Reprobado"
-                estado_text.color = ft.colors.GREEN if promedio_val >= 6 else ft.colors.RED
+                estado_text.color = ft.Colors.GREEN if promedio_val >= 6 else ft.Colors.RED
             
             def make_save_handler(materia_id, u1, u2, u3, prom_text, estado_text_ref):
                 def save(e):
@@ -118,10 +118,10 @@ class DashboardView:
                             
                             if promedio >= 6:
                                 estado_text_ref.value = "✅ Aprobado"
-                                estado_text_ref.color = ft.colors.GREEN
+                                estado_text_ref.color = ft.Colors.GREEN
                             else:
                                 estado_text_ref.value = "❌ Reprobado"
-                                estado_text_ref.color = ft.colors.RED
+                                estado_text_ref.color = ft.Colors.RED
                             
                             self.update_promedios()
                             self.controller.app.show_snackbar(message, False)
