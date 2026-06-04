@@ -61,4 +61,4 @@ class GradeController:
         return self.current_semester
     
     def logout(self):
-        self.app.show_login()
+        self.app.logout()

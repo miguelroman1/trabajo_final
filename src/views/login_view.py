@@ -9,7 +9,6 @@ class LoginView:
             "Sistema de Gestión de Calificaciones",
             size=32,
             weight="bold",
-            color=ft.Colors.BLUE
         )
         
         self.username_field = ft.TextField(label="Usuario", width=300)
@@ -41,9 +40,8 @@ class LoginView:
             ),
             padding=30,
             width=400,
-            bgcolor=ft.Colors.WHITE,
             border_radius=10,
-            shadow=ft.BoxShadow(spread_radius=1, blur_radius=10, color=ft.Colors.GREY)
+            shadow=ft.BoxShadow(spread_radius=1, blur_radius=10)
         )
         
         self.controller.app.clear_and_add(

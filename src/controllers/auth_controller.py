@@ -78,5 +78,4 @@ class AuthController:
             return False
     
     def logout(self):
-        self.app.set_user(None)
-        self.show_login()
+        self.app.logout()

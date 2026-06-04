@@ -33,7 +33,7 @@ class AppController:
     def show_snackbar(self, message: str, is_error: bool = False):
         snackbar = ft.SnackBar(
             content=ft.Text(message),
-            bgcolor=ft.Colors.RED if is_error else ft.Colors.GREEN,
+            bgcolor=ft.colors.RED if is_error else ft.colors.GREEN,
             open=True
         )
         self.page.overlay.append(snackbar)
@@ -49,3 +49,7 @@ class AppController:
         self.page.controls.clear()
         self.page.add(*controls)
         self.page.update()
+    
+    def logout(self):
+        self.set_user(None)
+        self.show_login()
