@@ -43,7 +43,7 @@ Proporcionar una herramienta intuitiva y eficiente para que los estudiantes de b
 ```bash
 git clone https://github.com/tu-usuario/trabajo-final.git
 cd trabajo-final
-
+bash```
 
 ### 2. Crear y activar el entorno virtual
 
@@ -54,3 +54,4 @@ python -m venv .venv
 # Linux/macOS
 python -m venv .venv
 source .venv/bin/activate
+bash```
