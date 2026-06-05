@@ -55,3 +55,40 @@ python -m venv .venv
 python -m venv .venv
 source .venv/bin/activate
 ```
+### 3. instalar dependencias
+
+```bash
+con pip es:
+pip install flet==0.21.2 mysql-connector-python bcrypt pillow
+```
+
+```bash
+con uv es:
+uv pip install flet==0.21.2 mysql-connector-python bcrypt pillow
+```
+
+### 4. configuracion de base de datos
+```bash
+# Acceder a MySQL
+mysql -u root -p
+
+# Ejecutar script (dentro de MySQL)
+SOURCE database/sistema_calificaciones.sql;
+```
+
+### 5. configurar conexion
+
+```python
+self._connection = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='tu_contraseña',
+    database='sistema_calificaciones'
+)
+```
+
+###6. ejecutar aplicacion
+```bash
+cd src
+python main.py
+```
