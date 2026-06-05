@@ -41,7 +41,7 @@ class RegisterView:
         form_container = ft.Container(
             content=ft.Column(
                 [
-                    ft.Text("Registro de Alumno", size=28, weight="bold", color=ft.Colors.BLUE),
+                    ft.Text("Registro de Alumno", size=28, weight="bold", color=ft.colors.BLUE),
                     ft.Divider(height=20),
                     self.nombre_field,
                     self.curp_field,
@@ -65,9 +65,9 @@ class RegisterView:
             width=500,
             height=600,
             padding=30,
-            bgcolor=ft.Colors.WHITE,
+            bgcolor=ft.colors.WHITE,
             border_radius=10,
-            shadow=ft.BoxShadow(spread_radius=1, blur_radius=10, color=ft.Colors.GREY_400)
+            shadow=ft.BoxShadow(spread_radius=1, blur_radius=10, color=ft.colors.GREY_400)
         )
         
         self.controller.app.clear_and_add(
