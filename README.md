@@ -44,7 +44,8 @@ Proporcionar una herramienta intuitiva y eficiente para que los estudiantes de b
 git clone https://github.com/tu-usuario/trabajo-final.git
 cd trabajo-final
 
-### 1. Crear y activar el entorno virtual
+
+### 2. Crear y activar el entorno virtual
 
 ```bash
 python -m venv .venv
