@@ -74,3 +74,54 @@ class UserModel:
             return cursor.fetchall()
         finally:
             cursor.close()
+    
+    @staticmethod
+    def update_profile(user_id: int, update_data: dict, new_password: str = None) -> tuple:
+        db = Database()
+        cursor = db.get_cursor()
+        
+        try:
+            # Construir query dinámica
+            fields = []
+            values = []
+            
+            for key, value in update_data.items():
+                if value is not None:
+                    fields.append(f"{key} = %s")
+                    values.append(value)
+            
+            if new_password:
+                fields.append("password = %s")
+                values.append(Validators.hash_password(new_password))
+            
+            if not fields:
+                return True, "No hay cambios para guardar"
+            
+            values.append(user_id)
+            query = f"UPDATE usuarios SET {', '.join(fields)} WHERE id = %s"
+            
+            cursor.execute(query, values)
+            db.commit()
+            
+            return True, "Perfil actualizado exitosamente"
+        except Exception as e:
+            return False, f"Error al actualizar: {str(e)}"
+        finally:
+            cursor.close()
+    
+    @staticmethod
+    def get_user_by_id(user_id: int) -> dict:
+        db = Database()
+        cursor = db.get_cursor()
+        
+        try:
+            query = """
+                SELECT u.*, e.nombre as especialidad_nombre 
+                FROM usuarios u
+                JOIN especialidades e ON u.especialidad_id = e.id
+                WHERE u.id = %s
+            """
+            cursor.execute(query, (user_id,))
+            return cursor.fetchone()
+        finally:
+            cursor.close()

@@ -80,6 +80,7 @@ CREATE TABLE `materias` (
   `especialidad_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 --
 -- Volcado de datos para la tabla `materias`
 --
@@ -175,9 +176,9 @@ ALTER TABLE `usuarios`
 --
 -- AUTO_INCREMENT de la tabla `calificaciones`
 --
-ALTER TABLE `calificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
+ALTER TABLE calificaciones
+ADD CONSTRAINT fk_calificaciones_materia
+FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE CASCADE;
 --
 -- AUTO_INCREMENT de la tabla `especialidades`
 --

@@ -306,7 +306,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "bcrypt", specifier = ">=5.0.0" },
-    { name = "flet", specifier = ">=0.85.2" },
+    { name = "flet", specifier = ">=0.21.2" },
     { name = "mysql-connector-python", specifier = ">=9.7.0" },
     { name = "pillow", specifier = ">=12.2.0" },
 ]

@@ -1,20 +1,22 @@
 import flet as ft
 from controllers.auth_controller import AuthController
 from controllers.grade_controller import GradeController
+from controllers.profile_controller import ProfileController
+
 
 class AppController:
-    def __init__(self, page: ft.Page):
+    def __init__(self, page):
         self.page = page
         self.current_user = None
         self.auth_controller = AuthController(self)
         self.grade_controller = GradeController(self)
+        self.profile_controller = ProfileController(self)
         self._setup_page()
     
     def _setup_page(self):
         self.page.title = "Sistema de Gestión de Calificaciones"
-        self.page.padding = 20
-        self.page.window_width = 1200
-        self.page.window_height = 800
+        # NO configures el tamaño aquí, ya se configuró en main.py
+        self.page.padding = 10
         self.page.horizontal_alignment = "center"
         self.page.vertical_alignment = "center"
     
@@ -53,3 +55,17 @@ class AppController:
     def logout(self):
         self.set_user(None)
         self.show_login()
+    
+    def show_profile(self):
+        self.profile_controller.show_profile()
+    
+    def handle_route(self, route):  # ← Este es el método que falta
+        if route == "/":
+            self.show_login()
+        elif route == "/dashboard":
+            self.show_dashboard()
+        elif route == "/profile":
+            self.show_profile()
+        elif route == "/logout":
+            self.logout()
+            

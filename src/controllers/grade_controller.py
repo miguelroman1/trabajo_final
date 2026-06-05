@@ -60,5 +60,21 @@ class GradeController:
     def get_current_semester(self):
         return self.current_semester
     
+    def agregar_materia(self, nombre: str) -> tuple:
+        user = self.app.get_user()
+        if user:
+            return SubjectModel.agregar_materia(
+                nombre,
+                self.current_semester,
+                user['especialidad_id']
+            )
+        return False, "Usuario no autenticado"
+    
+    def eliminar_materia(self, materia_id: int) -> tuple:  # ← Este método estaba faltando
+        user = self.app.get_user()
+        if user:
+            return SubjectModel.eliminar_materia(materia_id)
+        return False, "Usuario no autenticado"
+    
     def logout(self):
         self.app.logout()
