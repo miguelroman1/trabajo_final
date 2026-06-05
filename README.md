@@ -87,7 +87,7 @@ self._connection = mysql.connector.connect(
 )
 ```
 
-###6. ejecutar aplicacion
+### 6. ejecutar aplicacion
 ```bash
 cd src
 python main.py
