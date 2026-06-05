@@ -62,7 +62,7 @@ CREATE TABLE `especialidades` (
 --
 
 INSERT INTO `especialidades` (`id`, `nombre`) VALUES
-(7, 'electronica');
+(7, 'electronica'),
 (5, 'secretariado bilingue'),
 (2, 'recursos humanos'),
 (1, 'Programación');
