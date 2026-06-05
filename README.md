@@ -43,3 +43,15 @@ Proporcionar una herramienta intuitiva y eficiente para que los estudiantes de b
 ```bash
 git clone https://github.com/tu-usuario/trabajo-final.git
 cd trabajo-final
+
+## 📝 Instrucciones para usar el README:
+
+1. **Crea un archivo `README.md`** en la raíz de tu proyecto
+2. **Copia y pega** el contenido anterior
+3. **Personaliza** los nombres de los integrantes
+4. **Agrega la URL** de tu repositorio de GitHub
+5. **Si tienes imágenes**, crea una carpeta `docs/` y coloca:
+   - `docs/der.png` (Diagrama ER)
+   - `docs/screenshot1.png` (Capturas de pantalla)
+
+## 📁 Estructura recomendada con documentación:
