@@ -23,16 +23,19 @@ class Validators:
     @staticmethod
     def validate_phone(phone: str) -> bool:
         """
-        Valida número de teléfono internacional.
+        Valida número de teléfono.
         Acepta formatos:
-        - 6861234567 (10 dígitos)
-        - 5216861234567 (13 dígitos con código país)
-        - +5216861234567 (13 dígitos con +)
-        - +1 6861234567 (con espacio)
-        - 52-686-123-4567 (con guiones)
+        - 6562222258 (10 dígitos)
+        - 5216562222258 (13 dígitos con código país)
+        - +5216562222258 (con +)
         """
+        if not phone:
+            return True  # Celular opcional
+        
         # Eliminar espacios y guiones
         phone_clean = re.sub(r'[\s\-]', '', phone)
-        # Validar: puede empezar con + opcional, luego números (10-15 dígitos total)
+        
+        # Validar: solo números, opcionalmente puede empezar con +
+        # Entre 10 y 15 dígitos total
         pattern = r'^\+?\d{10,15}$'
         return re.match(pattern, phone_clean) is not None

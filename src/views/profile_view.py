@@ -1,5 +1,6 @@
 import flet as ft
 from models.user_model import UserModel
+from utils.validators import Validators
 
 class ProfileView:
     def __init__(self, controller):
@@ -22,13 +23,12 @@ class ProfileView:
             ),
         )
         
-        # Campos editables
+        # Campos
         nombre_field = ft.TextField(label="Nombre Completo", value=user.get('nombre_completo', ''), width=400, read_only=False)
         curp_field = ft.TextField(label="CURP", value=user.get('curp', ''), width=400, read_only=False)
-        # Matrícula NO es editable (solo lectura porque es único)
-        matricula_field = ft.TextField(label="Matrícula", value=user.get('matricula', user.get('username', '')), width=400, read_only=True)
+        matricula_field = ft.TextField(label="Matrícula", value=user.get('matricula', 'No registrada'), width=400, read_only=True)
         correo_field = ft.TextField(label="Correo Institucional", value=user.get('correo', ''), width=400, read_only=False)
-        celular_field = ft.TextField(label="Celular", value=user.get('celular', ''), width=400, read_only=False)
+        celular_field = ft.TextField(label="Celular", value=user.get('celular', ''), width=400, read_only=False, helper_text="10-15 dígitos, ej: 6562222258")
         especialidad_field = ft.TextField(label="Especialidad", value=user.get('especialidad_nombre', ''), width=400, read_only=True)
         username_field = ft.TextField(label="Usuario", value=user.get('username', ''), width=400, read_only=False)
         
@@ -58,6 +58,12 @@ class ProfileView:
                 self.controller.app.show_snackbar("El usuario es obligatorio", True)
                 return
             
+            # Validar celular si se ingresó
+            celular = celular_field.value.strip() if celular_field.value else ""
+            if celular and not Validators.validate_phone(celular):
+                self.controller.app.show_snackbar("Celular inválido. Use 10-15 dígitos, ej: 6562222258", True)
+                return
+            
             # Validar contraseña nueva si se ingresó
             new_password = None
             if nueva_password_field.value:
@@ -69,24 +75,22 @@ class ProfileView:
                     return
                 new_password = nueva_password_field.value
             
-            # Preparar datos a actualizar (MATRÍCULA NO SE ACTUALIZA)
+            # Preparar datos a actualizar
             update_data = {
                 'nombre_completo': nombre_field.value,
                 'curp': curp_field.value.upper(),
                 'correo': correo_field.value,
-                'celular': celular_field.value,
+                'celular': celular,
                 'username': username_field.value
             }
             
             success, message = UserModel.update_profile(user['id'], update_data, new_password)
             
             if success:
-                # Actualizar usuario en sesión
                 updated_user = UserModel.get_user_by_id(user['id'])
                 if updated_user:
                     self.controller.app.set_user(updated_user)
                 self.controller.app.show_snackbar(message, False)
-                # Limpiar campos de contraseña
                 nueva_password_field.value = ""
                 confirm_password_field.value = ""
             else:
@@ -109,7 +113,6 @@ class ProfileView:
             spacing=30
         )
         
-        # Contenido principal
         all_content = ft.Column(
             [
                 ft.Text("Mi Perfil", size=28, weight="bold", color=ft.colors.BLUE_700),
@@ -130,8 +133,8 @@ class ProfileView:
                 ft.Divider(height=20),
                 ft.Row(
                     [
-                        ft.ElevatedButton("💾 Guardar Cambios", on_click=guardar_cambios, icon=ft.icons.SAVE),
-                        ft.ElevatedButton("← Regresar", on_click=lambda e: self.controller.app.show_dashboard(), icon=ft.icons.ARROW_BACK),
+                        ft.ElevatedButton("Guardar Cambios", on_click=guardar_cambios, icon=ft.icons.SAVE),
+                        ft.ElevatedButton("Regresar", on_click=lambda e: self.controller.app.show_dashboard(), icon=ft.icons.ARROW_BACK),
                     ],
                     spacing=20,
                     alignment="center"
@@ -143,7 +146,6 @@ class ProfileView:
             horizontal_alignment="center",
         )
         
-        # Centrar contenido
         centered_container = ft.Row(
             [all_content],
             alignment="center",

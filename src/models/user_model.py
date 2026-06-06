@@ -8,18 +8,27 @@ class UserModel:
         cursor = db.get_cursor()
         
         try:
-            # Verificar si usuario, correo o matrícula ya existen
+            # Verificar si usuario o correo ya existen
             cursor.execute(
-                "SELECT id FROM usuarios WHERE username = %s OR correo = %s OR matricula = %s",
-                (user_data['username'], user_data['correo'], user_data.get('matricula', ''))
+                "SELECT id FROM usuarios WHERE username = %s OR correo = %s",
+                (user_data['username'], user_data['correo'])
             )
             if cursor.fetchone():
-                return False, "El usuario, correo o matrícula ya existe"
+                return False, "El usuario o correo ya existe"
+            
+            # Verificar si la matrícula ya existe (si se proporcionó)
+            if user_data.get('matricula'):
+                cursor.execute(
+                    "SELECT id FROM usuarios WHERE matricula = %s",
+                    (user_data['matricula'],)
+                )
+                if cursor.fetchone():
+                    return False, "La matrícula ya está registrada"
             
             # Hash de contraseña
             hashed_password = Validators.hash_password(user_data['password'])
             
-            # Insertar usuario
+            # Insertar usuario (matrícula puede ser NULL)
             query = """
                 INSERT INTO usuarios 
                 (nombre_completo, curp, matricula, correo, celular, foto_perfil, username, password, especialidad_id)
@@ -28,7 +37,7 @@ class UserModel:
             cursor.execute(query, (
                 user_data['nombre_completo'],
                 user_data['curp'],
-                user_data.get('matricula', ''),
+                user_data.get('matricula'),  # Puede ser None
                 user_data['correo'],
                 user_data.get('celular', ''),
                 user_data.get('foto_perfil', ''),
@@ -109,17 +118,6 @@ class UserModel:
             db.commit()
             
             return True, "Perfil actualizado exitosamente"
-        except mysql.connector.IntegrityError as e:
-            if "duplicate" in str(e).lower():
-                if "correo" in str(e).lower():
-                    return False, "El correo ya está registrado por otro usuario"
-                elif "username" in str(e).lower():
-                    return False, "El nombre de usuario ya está en uso"
-                elif "curp" in str(e).lower():
-                    return False, "La CURP ya está registrada"
-                else:
-                    return False, "Ya existe un registro con ese valor único"
-            return False, f"Error al actualizar: {str(e)}"
         except Exception as e:
             return False, f"Error al actualizar: {str(e)}"
         finally:

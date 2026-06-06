@@ -1,6 +1,7 @@
 import flet as ft
 import re
 from models.user_model import UserModel
+from utils.validators import Validators
 
 class RegisterView:
     def __init__(self, controller):
@@ -12,12 +13,12 @@ class RegisterView:
         
         self.nombre_field = ft.TextField(label="Nombre Completo", width=400)
         self.curp_field = ft.TextField(label="CURP", width=400, helper_text="Ejemplo: ROMP010101HDFNRN01")
-        self.matricula_field = ft.TextField(label="Matrícula", width=400, helper_text="Número de matrícula escolar")
+        self.matricula_field = ft.TextField(label="Matrícula", width=400, helper_text="Número de matrícula escolar (opcional)")
         self.correo_field = ft.TextField(label="Correo Institucional", width=400, helper_text="ejemplo@cetis61.edu.mx")
-        self.celular_field = ft.TextField(label="Celular", width=400, helper_text="Ejemplo: +5216861234567 o 6861234567 (10-15 dígitos)")
+        self.celular_field = ft.TextField(label="Celular", width=400, helper_text="Ejemplo: 6562222258 (10-15 dígitos)")
         self.username_field = ft.TextField(label="Usuario", width=400)
         self.password_field = ft.TextField(label="Contraseña", width=400, password=True, can_reveal_password=True, helper_text="Mínimo 6 caracteres")
-        self.confirm_password_field = ft.TextField(label="Confirmar Contraseña", width=400, password=True, can_reveal_password=True)
+        self.confirm_password_field = ft.TextField(label="Confirmar Contraseña", width=400, password=True, can_reveal_password=True, helper_text="Confirme su contraseña")
         self.especialidad_dropdown = ft.Dropdown(
             label="Especialidad",
             width=400,
@@ -25,19 +26,19 @@ class RegisterView:
         )
         
         def on_submit(e):
-            # Validar celular internacional (10-15 dígitos, puede empezar con +)
+            # Validar celular (opcional)
             celular = self.celular_field.value.strip() if self.celular_field.value else ""
-            if celular:
-                # Acepta formatos: +5216861234567, 5216861234567, 6861234567
-                patron_celular = r'^(\+?\d{1,3}?)\d{10,15}$'
-                if not re.match(patron_celular, celular):
-                    self.controller.app.show_snackbar("Celular inválido. Use 10-15 dígitos, ej: +5216861234567", True)
-                    return
+            if celular and not Validators.validate_phone(celular):
+                self.controller.app.show_snackbar("Celular inválido. Use 10-15 dígitos, ej: 6562222258", True)
+                return
+            
+            # Matrícula es opcional, si está vacía se guarda como NULL
+            matricula = self.matricula_field.value.strip() if self.matricula_field.value else None
             
             form_data = {
                 'nombre_completo': self.nombre_field.value,
                 'curp': self.curp_field.value,
-                'matricula': self.matricula_field.value,
+                'matricula': matricula,
                 'correo': self.correo_field.value,
                 'celular': celular,
                 'username': self.username_field.value,
@@ -76,7 +77,7 @@ class RegisterView:
                 scroll=ft.ScrollMode.AUTO
             ),
             width=500,
-            height=600,
+            height=650,
             padding=30,
             bgcolor=ft.colors.WHITE,
             border_radius=10,
