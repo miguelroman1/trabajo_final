@@ -132,6 +132,20 @@ class DashboardView:
     def on_semester_change(self, e):
         self.controller.change_semester(int(self.semestre_dropdown.value))
     
+    def calcular_promedio(self, unidad1, unidad2, unidad3):
+        """Calcula el promedio solo con las unidades que tienen nota"""
+        notas = []
+        if unidad1 is not None and unidad1 != "" and unidad1 != 0:
+            notas.append(float(unidad1))
+        if unidad2 is not None and unidad2 != "" and unidad2 != 0:
+            notas.append(float(unidad2))
+        if unidad3 is not None and unidad3 != "" and unidad3 != 0:
+            notas.append(float(unidad3))
+        
+        if len(notas) == 0:
+            return 0.0
+        return sum(notas) / len(notas)
+    
     def refresh_grades(self):
         self.grades_container.controls.clear()
         
@@ -149,19 +163,23 @@ class DashboardView:
         for materia in materias:
             calif = calificaciones_dict.get(materia['id'])
             
+            u1_value = str(calif['unidad1']) if calif and calif['unidad1'] and calif['unidad1'] != 0 else ""
+            u2_value = str(calif['unidad2']) if calif and calif['unidad2'] and calif['unidad2'] != 0 else ""
+            u3_value = str(calif['unidad3']) if calif and calif['unidad3'] and calif['unidad3'] != 0 else ""
+            
             u1_field = ft.TextField(
                 label="Unidad 1", width=100, height=45,
-                value=str(calif['unidad1']) if calif and calif['unidad1'] else "",
+                value=u1_value,
                 text_size=13, text_align=ft.TextAlign.CENTER
             )
             u2_field = ft.TextField(
                 label="Unidad 2", width=100, height=45,
-                value=str(calif['unidad2']) if calif and calif['unidad2'] else "",
+                value=u2_value,
                 text_size=13, text_align=ft.TextAlign.CENTER
             )
             u3_field = ft.TextField(
                 label="Unidad 3", width=100, height=45,
-                value=str(calif['unidad3']) if calif and calif['unidad3'] else "",
+                value=u3_value,
                 text_size=13, text_align=ft.TextAlign.CENTER
             )
             
@@ -169,31 +187,54 @@ class DashboardView:
             estado_text = ft.Text("", size=16)
             
             if calif:
-                promedio_val = (calif['unidad1'] + calif['unidad2'] + calif['unidad3']) / 3
-                promedio_text.value = f"Prom: {promedio_val:.2f}"
-                estado_text.value = "✅ Aprobado" if promedio_val >= 6 else "❌ Reprobado"
-                estado_text.color = ft.colors.GREEN if promedio_val >= 6 else ft.colors.RED
+                # Usar la función calcular_promedio
+                notas = []
+                if calif['unidad1'] and calif['unidad1'] != 0:
+                    notas.append(calif['unidad1'])
+                if calif['unidad2'] and calif['unidad2'] != 0:
+                    notas.append(calif['unidad2'])
+                if calif['unidad3'] and calif['unidad3'] != 0:
+                    notas.append(calif['unidad3'])
+                
+                if len(notas) > 0:
+                    promedio_val = sum(notas) / len(notas)
+                    promedio_text.value = f"Prom: {promedio_val:.2f}"
+                    estado_text.value = "✅ Aprobado" if promedio_val >= 6 else "❌ Reprobado"
+                    estado_text.color = ft.colors.GREEN if promedio_val >= 6 else ft.colors.RED
             
             def make_save_handler(mid, u1, u2, u3, prom_txt, estado_txt):
                 def save(e):
                     try:
-                        if not u1.value or not u2.value or not u3.value:
-                            self.controller.app.show_snackbar("Complete todas las calificaciones", True)
+                        # Obtener valores (pueden estar vacíos)
+                        v1 = float(u1.value) if u1.value and u1.value.strip() else None
+                        v2 = float(u2.value) if u2.value and u2.value.strip() else None
+                        v3 = float(u3.value) if u3.value and u3.value.strip() else None
+                        
+                        # Validar que al menos una unidad tenga nota
+                        if v1 is None and v2 is None and v3 is None:
+                            self.controller.app.show_snackbar("Ingrese al menos una calificación", True)
                             return
                         
-                        v1, v2, v3 = float(u1.value), float(u2.value), float(u3.value)
+                        # Validar rango de notas (solo las que tienen valor)
+                        for v in [v1, v2, v3]:
+                            if v is not None and not (0 <= v <= 10):
+                                self.controller.app.show_snackbar("Las calificaciones deben estar entre 0 y 10", True)
+                                return
                         
-                        if not all(0 <= v <= 10 for v in [v1, v2, v3]):
-                            self.controller.app.show_snackbar("Notas entre 0 y 10", True)
-                            return
-                        
-                        success, msg = self.controller.save_calificacion(mid, v1, v2, v3)
+                        # Guardar calificaciones
+                        success, msg = self.controller.save_calificacion(mid, v1 if v1 is not None else 0, 
+                                                                          v2 if v2 is not None else 0, 
+                                                                          v3 if v3 is not None else 0)
                         
                         if success:
-                            prom = (v1 + v2 + v3) / 3
-                            prom_txt.value = f"Prom: {prom:.2f}"
-                            estado_txt.value = "✅ Aprobado" if prom >= 6 else "❌ Reprobado"
-                            estado_txt.color = ft.colors.GREEN if prom >= 6 else ft.colors.RED
+                            # Calcular promedio solo con las notas existentes
+                            notas = [n for n in [v1, v2, v3] if n is not None]
+                            if notas:
+                                prom = sum(notas) / len(notas)
+                                prom_txt.value = f"Prom: {prom:.2f}"
+                                estado_txt.value = "✅ Aprobado" if prom >= 6 else "❌ Reprobado"
+                                estado_txt.color = ft.colors.GREEN if prom >= 6 else ft.colors.RED
+                            
                             self.update_promedios()
                             self.controller.app.show_snackbar(msg, False)
                         else:

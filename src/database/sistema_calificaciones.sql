@@ -11,24 +11,97 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
 -- Base de datos: `sistema_calificaciones`
---
+CREATE DATABASE IF NOT EXISTS `sistema_calificaciones`;
+USE `sistema_calificaciones`;
 
 -- --------------------------------------------------------
+-- Tabla `especialidades`
+-- --------------------------------------------------------
+CREATE TABLE `especialidades` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nombre` (`nombre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Estructura de tabla para la tabla `calificaciones`
---
+INSERT INTO `especialidades` (`id`, `nombre`) VALUES
+(1, 'Programación'),
+(2, 'Contabilidad'),
+(3, 'Electricidad'),
+(4, 'Electrónica'),
+(5, 'Recursos Humanos'),
+(6, 'Secretariado Bilingüe');
 
+-- --------------------------------------------------------
+-- Tabla `usuarios`
+-- --------------------------------------------------------
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_completo` varchar(200) NOT NULL,
+  `curp` varchar(18) NOT NULL,
+  `matricula` varchar(20) DEFAULT NULL,
+  `correo` varchar(100) NOT NULL,
+  `celular` varchar(20) DEFAULT NULL,
+  `foto_perfil` varchar(500) DEFAULT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `especialidad_id` int(11) NOT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `curp` (`curp`),
+  UNIQUE KEY `correo` (`correo`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `matricula` (`matricula`),
+  KEY `especialidad_id` (`especialidad_id`),
+  CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`especialidad_id`) REFERENCES `especialidades` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Tabla `materias`
+-- --------------------------------------------------------
+CREATE TABLE `materias` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `semestre` int(11) NOT NULL CHECK (`semestre` between 1 and 6),
+  `especialidad_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_materia_semestre` (`nombre`,`semestre`,`especialidad_id`),
+  KEY `idx_materia_especialidad` (`especialidad_id`,`semestre`),
+  CONSTRAINT `materias_ibfk_1` FOREIGN KEY (`especialidad_id`) REFERENCES `especialidades` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Materias para Programación (especialidad_id = 1)
+INSERT INTO `materias` (`nombre`, `semestre`, `especialidad_id`) VALUES
+('Fundamentos de Programación', 1, 1),
+('Matemáticas Discretas', 1, 1),
+('Introducción a Bases de Datos', 1, 1),
+('Programación Estructurada', 2, 1),
+('Cálculo Diferencial', 2, 1),
+('SQL Avanzado', 2, 1),
+('Programación Orientada a Objetos', 3, 1),
+('Álgebra Lineal', 3, 1),
+('Estructura de Datos', 3, 1),
+('Desarrollo Web', 4, 1),
+('Bases de Datos Avanzadas', 4, 1),
+('Estadística', 4, 1),
+('Frameworks JavaScript', 5, 1),
+('Metodologías Ágiles', 5, 1),
+('Redes de Computadoras', 5, 1),
+('Desarrollo Móvil', 6, 1),
+('Proyecto de Titulación', 6, 1),
+('Ética Profesional', 6, 1);
+
+-- --------------------------------------------------------
+-- Tabla `calificaciones`
+-- --------------------------------------------------------
 CREATE TABLE `calificaciones` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `usuario_id` int(11) NOT NULL,
   `materia_id` int(11) NOT NULL,
   `semestre` int(11) NOT NULL CHECK (`semestre` between 1 and 6),
@@ -36,191 +109,20 @@ CREATE TABLE `calificaciones` (
   `unidad2` decimal(4,2) DEFAULT NULL CHECK (`unidad2` between 0 and 10),
   `unidad3` decimal(4,2) DEFAULT NULL CHECK (`unidad3` between 0 and 10),
   `promedio` decimal(4,2) DEFAULT NULL,
-  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_calificacion` (`usuario_id`,`materia_id`,`semestre`),
+  KEY `materia_id` (`materia_id`),
+  KEY `idx_usuario_semestre` (`usuario_id`,`semestre`),
+  CONSTRAINT `calificaciones_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `calificaciones_ibfk_2` FOREIGN KEY (`materia_id`) REFERENCES `materias` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `calificaciones`
---
+-- Usuario de prueba
+INSERT INTO `usuarios` (`id`, `nombre_completo`, `curp`, `matricula`, `correo`, `celular`, `username`, `password`, `especialidad_id`) VALUES
+(1, 'Miguel Angel Roman Padilla', 'ROPM010101HDFNRN01', '23308060610314', 'miguel.roman@cetis61.edu.mx', '6861234567', 'miguel', '9b7af877e7ad4c237a87d38a767e4975ec90b978886e117f1952638a970db4f9', 1);
 
-INSERT INTO `calificaciones` (`id`, `usuario_id`, `materia_id`, `semestre`, `unidad1`, `unidad2`, `unidad3`, `promedio`, `fecha_registro`) VALUES
-(1, 1, 1, 1, 6.00, 8.00, 8.00, 7.33, '2026-06-02 17:04:31');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `especialidades`
---
-
-CREATE TABLE `especialidades` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `especialidades`
---
-
-INSERT INTO `especialidades` (`id`, `nombre`) VALUES
-(7, 'electronica'),
-(5, 'secretariado bilingue'),
-(2, 'recursos humanos'),
-(1, 'Programación');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `materias`
---
-
-CREATE TABLE `materias` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `semestre` int(11) NOT NULL CHECK (`semestre` between 1 and 6),
-  `especialidad_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
---
--- Volcado de datos para la tabla `materias`
---
-
-INSERT INTO `materias` (`id`, `nombre`, `semestre`, `especialidad_id`) VALUES
-(9, 'Álgebra Lineal', 3, 1),
-(11, 'Bases de Datos Avanzadas', 4, 1),
-(5, 'Cálculo Diferencial', 2, 1),
-(16, 'Desarrollo Móvil', 6, 1),
-(10, 'Desarrollo Web', 4, 1),
-(12, 'Estadística', 4, 1),
-(8, 'Estructura de Datos', 3, 1),
-(18, 'Ética Profesional', 6, 1),
-(13, 'Frameworks JavaScript', 5, 1),
-(1, 'Fundamentos de Programación', 1, 1),
-(3, 'Introducción a Bases de Datos', 1, 1),
-(2, 'Matemáticas Discretas', 1, 1),
-(14, 'Metodologías Ágiles', 5, 1),
-(4, 'Programación Estructurada', 2, 1),
-(7, 'Programación Orientada a Objetos', 3, 1),
-(17, 'Proyecto de Titulación', 6, 1),
-(15, 'Redes de Computadoras', 5, 1),
-(6, 'SQL Avanzado', 2, 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `usuarios`
---
-
-CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
-  `nombre_completo` varchar(200) NOT NULL,
-  `curp` varchar(18) NOT NULL,
-  `correo` varchar(100) NOT NULL,
-  `celular` varchar(15) DEFAULT NULL,
-  `foto_perfil` varchar(500) DEFAULT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `especialidad_id` int(11) NOT NULL,
-  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `usuarios`
---
-
-INSERT INTO `usuarios` (`id`, `nombre_completo`, `curp`, `correo`, `celular`, `foto_perfil`, `username`, `password`, `especialidad_id`, `fecha_registro`) VALUES
-(1, 'Miguel Angel Roman Padilla', 'LKHJ654565LALALA65', '23308060610314@cetis61.edu.mx', '6824788982', '', 'angel', '9b7af877e7ad4c237a87d38a767e4975ec90b978886e117f1952638a970db4f9', 1, '2026-06-02 17:03:41');
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `calificaciones`
---
-ALTER TABLE `calificaciones`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_calificacion` (`usuario_id`,`materia_id`,`semestre`),
-  ADD KEY `materia_id` (`materia_id`),
-  ADD KEY `idx_usuario_semestre` (`usuario_id`,`semestre`);
-
---
--- Indices de la tabla `especialidades`
---
-ALTER TABLE `especialidades`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `nombre` (`nombre`);
-
---
--- Indices de la tabla `materias`
---
-ALTER TABLE `materias`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_materia_semestre` (`nombre`,`semestre`,`especialidad_id`),
-  ADD KEY `idx_materia_especialidad` (`especialidad_id`,`semestre`);
-
---
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `curp` (`curp`),
-  ADD UNIQUE KEY `correo` (`correo`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD KEY `especialidad_id` (`especialidad_id`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `calificaciones`
---
-ALTER TABLE calificaciones
-ADD CONSTRAINT fk_calificaciones_materia
-FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE CASCADE;
---
--- AUTO_INCREMENT de la tabla `especialidades`
---
-ALTER TABLE `especialidades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT de la tabla `materias`
---
-ALTER TABLE `materias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `calificaciones`
---
-ALTER TABLE `calificaciones`
-  ADD CONSTRAINT `calificaciones_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `calificaciones_ibfk_2` FOREIGN KEY (`materia_id`) REFERENCES `materias` (`id`);
-
---
--- Filtros para la tabla `materias`
---
-ALTER TABLE `materias`
-  ADD CONSTRAINT `materias_ibfk_1` FOREIGN KEY (`especialidad_id`) REFERENCES `especialidades` (`id`);
-
---
--- Filtros para la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`especialidad_id`) REFERENCES `especialidades` (`id`);
 COMMIT;
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

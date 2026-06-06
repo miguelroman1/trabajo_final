@@ -15,6 +15,9 @@ class AuthController:
     
     def show_register(self):
         self.register_view.build()
+        
+        
+    
     
     def handle_login(self, username: str, password: str) -> bool:
         if not username or not password:
@@ -46,6 +49,11 @@ class AuthController:
         # Validar email
         if not Validators.validate_email(form_data['correo']):
             self.app.show_snackbar("Correo electrónico no válido", True)
+            return False
+        
+        celular = form_data.get('celular', '')
+        if celular and not Validators.validate_phone(celular):
+            self.app.show_snackbar("Número de celular inválido. Use 10-15 dígitos, ej: +5216861234567", True)
             return False
         
         # Validar contraseñas

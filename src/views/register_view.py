@@ -1,4 +1,5 @@
 import flet as ft
+import re
 from models.user_model import UserModel
 
 class RegisterView:
@@ -10,11 +11,12 @@ class RegisterView:
         especialidad_options = [ft.dropdown.Option(str(e['id']), e['nombre']) for e in especialidades]
         
         self.nombre_field = ft.TextField(label="Nombre Completo", width=400)
-        self.curp_field = ft.TextField(label="CURP", width=400)
-        self.correo_field = ft.TextField(label="Correo Institucional", width=400)
-        self.celular_field = ft.TextField(label="Celular", width=400)
+        self.curp_field = ft.TextField(label="CURP", width=400, helper_text="Ejemplo: ROMP010101HDFNRN01")
+        self.matricula_field = ft.TextField(label="Matrícula", width=400, helper_text="Número de matrícula escolar")
+        self.correo_field = ft.TextField(label="Correo Institucional", width=400, helper_text="ejemplo@cetis61.edu.mx")
+        self.celular_field = ft.TextField(label="Celular", width=400, helper_text="Ejemplo: +5216861234567 o 6861234567 (10-15 dígitos)")
         self.username_field = ft.TextField(label="Usuario", width=400)
-        self.password_field = ft.TextField(label="Contraseña", width=400, password=True, can_reveal_password=True)
+        self.password_field = ft.TextField(label="Contraseña", width=400, password=True, can_reveal_password=True, helper_text="Mínimo 6 caracteres")
         self.confirm_password_field = ft.TextField(label="Confirmar Contraseña", width=400, password=True, can_reveal_password=True)
         self.especialidad_dropdown = ft.Dropdown(
             label="Especialidad",
@@ -23,11 +25,21 @@ class RegisterView:
         )
         
         def on_submit(e):
+            # Validar celular internacional (10-15 dígitos, puede empezar con +)
+            celular = self.celular_field.value.strip() if self.celular_field.value else ""
+            if celular:
+                # Acepta formatos: +5216861234567, 5216861234567, 6861234567
+                patron_celular = r'^(\+?\d{1,3}?)\d{10,15}$'
+                if not re.match(patron_celular, celular):
+                    self.controller.app.show_snackbar("Celular inválido. Use 10-15 dígitos, ej: +5216861234567", True)
+                    return
+            
             form_data = {
                 'nombre_completo': self.nombre_field.value,
                 'curp': self.curp_field.value,
+                'matricula': self.matricula_field.value,
                 'correo': self.correo_field.value,
-                'celular': self.celular_field.value,
+                'celular': celular,
                 'username': self.username_field.value,
                 'password': self.password_field.value,
                 'confirm_password': self.confirm_password_field.value,
@@ -45,6 +57,7 @@ class RegisterView:
                     ft.Divider(height=20),
                     self.nombre_field,
                     self.curp_field,
+                    self.matricula_field,
                     self.correo_field,
                     self.celular_field,
                     self.username_field,

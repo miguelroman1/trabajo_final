@@ -16,7 +16,7 @@ class Database:
                 self._connection = mysql.connector.connect(
                     host='localhost',
                     user='root',
-                    password='',
+                    password='',  # Tu contraseña de MySQL
                     database='sistema_calificaciones'
                 )
             return self._connection
