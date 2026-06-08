@@ -184,3 +184,33 @@ trabajo-final/
 ## 📊 Diagrama Entidad-Relación (DER)
 
 ![Diagrama Entidad-Relación](src/assets/diagrama.png)
+
+### relaciones
+
+-especialidades (1) ── (N) usuarios
+
+-especialidades (1) ── (N) materias
+
+-usuarios (1) ── (N) calificaciones
+
+-materias (1) ── (N) calificaciones
+
+## 👥 Integrantes y Roles
+
+| Integrante | Rol | Responsabilidad |
+|------------|-----|-----------------|
+| Miguel Angel Roman Padilla | Desarrollador Backend | Base de datos, lógica de negocio, modelos, controladores |
+| Heriberto Yurem Vasquez Cervantes | Desarrollador Frontend | Interfaces de usuario, vistas, validaciones, diseño |
+
+## 📦 Dependencias 
+
+-flet==0.21.2
+-mysql-connector-python==9.0.0
+-bcrypt==5.0.0
+-pillow==12.0.0
+
+## 📧 Contacto
+
+- **Repositorio:** [GitHub - trabajo-final](https://github.com/tu-usuario/trabajo-final)
+
+- **Documentación:** [Ver Manual de Usuario](src/assets/manual.pdf)
