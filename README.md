@@ -120,3 +120,64 @@ trabajo-final/
 │   └── sistema_calificaciones.sql
 └── README.md
 ```
+
+## 🖥️ Funcionalidades
+
+### 🔐 Login y Registro
+
+- Inicio de sesión con usuario y contraseña
+
+- Registro con validación de CURP, email y contraseña
+
+- Encriptación de contraseñas con SHA256
+
+### 📊 Dashboard
+
+-Vista general del alumno y su especialidad
+
+-Selector de semestre (1° a 6°)
+
+-Lista de materias con campos para calificaciones
+
+-Promedio por materia, semestre y general
+
+### 📝 Gestión de Calificaciones
+
+-Registro de 3 unidades por materia
+
+-Validación de rango (0-10)
+
+-Cálculo automático de promedios
+
+-Indicador visual aprobado/reprobado
+
+### ➕ Gestión de Materias
+
+-Agregar nuevas materias
+
+-Eliminar materias existentes
+
+-Materias asociadas a especialidad y semestre
+
+### 👤 Perfil de Usuario
+
+-Ver datos personales
+
+-Editar información
+
+-Cambiar contraseña
+
+### 🔧 Validaciones Implementadas
+
+## 🔧 Validaciones Implementadas
+
+| Tipo | Validación | Mensaje |
+|------|------------|---------|
+| Login | Campos vacíos | "Todos los campos son obligatorios" |
+| Login | Credenciales incorrectas | "Usuario o contraseña incorrectos" |
+| Registro | CURP inválida | "CURP no válida" |
+| Registro | Email inválido | "Correo electrónico no válido" |
+| Registro | Contraseñas no coinciden | "Las contraseñas no coinciden" |
+| Registro | Contraseña corta | "Mínimo 6 caracteres" |
+| Calificaciones | Fuera de rango | "Notas entre 0 y 10" |
+| Calificaciones | Número inválido | "Ingrese números válidos" |
