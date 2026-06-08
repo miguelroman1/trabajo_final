@@ -95,6 +95,7 @@ python main.py
 
 ### 7. estuctrura del proyecto
 
+```bash
 trabajo-final/
 ├── src/
 │   ├── main.py                 # Punto de entrada
@@ -118,3 +119,4 @@ trabajo-final/
 ├── database/
 │   └── sistema_calificaciones.sql
 └── README.md
+```
