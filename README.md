@@ -183,4 +183,4 @@ trabajo-final/
 
 ## 📊 Diagrama Entidad-Relación (DER)
 
-![DER](src/assets/diagrama_ER.png)
+![Diagrama Entidad-Relación](src/assets/diagrama ER.png)
