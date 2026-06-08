@@ -181,6 +181,6 @@ trabajo-final/
 | Calificaciones | Número inválido | "Ingrese números válidos" |
 
 
-##📊 Diagrama Entidad-Relación (DER)
+## 📊 Diagrama Entidad-Relación (DER)
 
 ![DER](src/assets/diagrama_ER.png)
