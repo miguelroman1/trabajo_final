@@ -92,3 +92,29 @@ self._connection = mysql.connector.connect(
 cd src
 python main.py
 ```
+
+### 7. estuctrura del proyecto
+
+trabajo-final/
+├── src/
+│   ├── main.py                 # Punto de entrada
+│   ├── controllers/            # Lógica de control
+│   │   ├── app_controller.py
+│   │   ├── auth_controller.py
+│   │   ├── grade_controller.py
+│   │   └── profile_controller.py
+│   ├── views/                  # Interfaz de usuario
+│   │   ├── login_view.py
+│   │   ├── register_view.py
+│   │   ├── dashboard_view.py
+│   │   └── profile_view.py
+│   ├── models/                 # Base de datos
+│   │   ├── database.py
+│   │   ├── user_model.py
+│   │   ├── subject_model.py
+│   │   └── grade_model.py
+│   └── utils/                  # Utilidades
+│       └── validators.py
+├── database/
+│   └── sistema_calificaciones.sql
+└── README.md
