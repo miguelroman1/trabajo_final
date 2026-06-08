@@ -214,3 +214,9 @@ trabajo-final/
 - **Repositorio:** [GitHub - trabajo-final](https://github.com/miguelroman1/trabajo_final)
 
 - **Documentación:** [Ver Manual de Usuario](src/assets/manual.pdf)
+
+## 🙏 Agradecimientos
+
+-CETIS 61 - Por el apoyo en el desarrollo
+
+-Profesor de la materia - Por la guía y enseñanza
