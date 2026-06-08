@@ -213,4 +213,4 @@ trabajo-final/
 
 - **Repositorio:** [GitHub - trabajo-final](https://github.com/miguelroman1/trabajo_final)
 
-- **Documentación:** [Ver Manual de Usuario](src/assets/manual.docx)
+- **Documentación:** [Ver Manual de Usuario](src/assets/manual.pdf)
