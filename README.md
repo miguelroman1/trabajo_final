@@ -133,39 +133,39 @@ trabajo-final/
 
 ### 📊 Dashboard
 
--Vista general del alumno y su especialidad
+- Vista general del alumno y su especialidad
 
--Selector de semestre (1° a 6°)
+- Selector de semestre (1° a 6°)
 
--Lista de materias con campos para calificaciones
+- Lista de materias con campos para calificaciones
 
--Promedio por materia, semestre y general
+- Promedio por materia, semestre y general
 
 ### 📝 Gestión de Calificaciones
 
--Registro de 3 unidades por materia
+- Registro de 3 unidades por materia
 
--Validación de rango (0-10)
+- Validación de rango (0-10)
 
--Cálculo automático de promedios
+- Cálculo automático de promedios
 
--Indicador visual aprobado/reprobado
+- Indicador visual aprobado/reprobado
 
 ### ➕ Gestión de Materias
 
--Agregar nuevas materias
+- Agregar nuevas materias
 
--Eliminar materias existentes
+- Eliminar materias existentes
 
--Materias asociadas a especialidad y semestre
+- Materias asociadas a especialidad y semestre
 
 ### 👤 Perfil de Usuario
 
--Ver datos personales
+- Ver datos personales
 
--Editar información
+- Editar información
 
--Cambiar contraseña
+- Cambiar contraseña
 
 ## 🔧 Validaciones Implementadas
 
@@ -187,13 +187,13 @@ trabajo-final/
 
 ### relaciones
 
--especialidades (1) ── (N) usuarios
+- especialidades (1) ── (N) usuarios
 
--especialidades (1) ── (N) materias
+- especialidades (1) ── (N) materias
 
--usuarios (1) ── (N) calificaciones
+- usuarios (1) ── (N) calificaciones
 
--materias (1) ── (N) calificaciones
+- materias (1) ── (N) calificaciones
 
 ## 👥 Integrantes y Roles
 
@@ -204,10 +204,10 @@ trabajo-final/
 
 ## 📦 Dependencias 
 
--flet==0.21.2
--mysql-connector-python==9.0.0
--bcrypt==5.0.0
--pillow==12.0.0
+- flet==0.21.2
+- mysql-connector-python==9.0.0
+- bcrypt==5.0.0
+- pillow==12.0.0
 
 ## 📧 Contacto
 
@@ -217,6 +217,6 @@ trabajo-final/
 
 ## 🙏 Agradecimientos
 
--CETIS 61 - Por el apoyo en el desarrollo
+- CETIS 61 - Por el apoyo en el desarrollo
 
--Profesor de la materia - Por la guía y enseñanza
+- Profesor de la materia - Por la guía y enseñanza
