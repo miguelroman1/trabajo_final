@@ -182,4 +182,4 @@ trabajo-final/
 
 ##📊 Diagrama Entidad-Relación (DER)
 
-![DER](src/assets/diagrama_er.png)
+![DER](src/assets/diagrama_ER.png)
