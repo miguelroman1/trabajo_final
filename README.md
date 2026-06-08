@@ -180,6 +180,7 @@ trabajo-final/
 | Calificaciones | Fuera de rango | "Notas entre 0 y 10" |
 | Calificaciones | Número inválido | "Ingrese números válidos" |
 
+
 ##📊 Diagrama Entidad-Relación (DER)
 
 ![DER](src/assets/diagrama_ER.png)
